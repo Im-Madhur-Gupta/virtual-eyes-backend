@@ -8,7 +8,7 @@ const app = express();
 app.use(express.json());
 
 app.get("/", (req, res, next) => {
-  res.send("<h1>hello</h1>");
+  res.send("<h1>Welcome to the HomePage of Virtual Eyes Backend.</h1>");
 });
 
 app.use("/visualize-image", visualizeImageRouter);
