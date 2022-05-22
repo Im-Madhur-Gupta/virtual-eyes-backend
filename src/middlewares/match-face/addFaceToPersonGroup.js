@@ -20,7 +20,12 @@ async function WaitForPersonGroupTraining(person_group_id) {
   }
 }
 
-async function addFacesToPersonGroup(faceName, faceImages, personGroupId) {
+async function addFacesToPersonGroup(
+  faceName,
+  faceImages,
+  personGroupId,
+  userId
+) {
   console.log("Adding faces to person group...");
   // The similar faces will be grouped into a single person group -> person.
 
@@ -37,7 +42,7 @@ async function addFacesToPersonGroup(faceName, faceImages, personGroupId) {
     faceImages.map(async function (similar_image) {
       // Check if the image is of sufficent quality for recognition.
       let sufficientQuality = true;
-      const imgPath = path.join("./", "uploads", personGroupId, similar_image);
+      const imgPath = path.join("./", "uploads", userId, similar_image);
 
       let detectedFaces = await faceServiceClient.face.detectWithStream(
         () => createReadStream(imgPath),
@@ -81,7 +86,7 @@ async function addFacesToPersonGroup(faceName, faceImages, personGroupId) {
   await WaitForPersonGroupTraining(personGroupId);
 
   // remove the directory which we created to store the images
-  const dirPath = path.join("./", "uploads", personGroupId);
+  const dirPath = path.join("./", "uploads", userId);
   rm(dirPath, { recursive: true }, (err) => {
     if (err) {
       throw err;

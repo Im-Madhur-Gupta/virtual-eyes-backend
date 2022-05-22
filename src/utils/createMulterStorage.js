@@ -1,14 +1,14 @@
 const fs = require("fs");
 const multer = require("multer");
 
-const createMulterStorage = (destination) => {
+const createMulterStorage = () => {
   const multerStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-      if (!destination) {
-        destination = "./uploads/" + req.user.person_group_id;
-        fs.mkdirSync(destination);
+      const destPath = "./uploads/" + req.user.user_id;
+      if (!fs.existsSync(destPath)) {
+        fs.mkdirSync(destPath);
       }
-      cb(null, destination);
+      cb(null, destPath);
     },
     filename: function (req, file, cb) {
       cb(null, file.originalname);

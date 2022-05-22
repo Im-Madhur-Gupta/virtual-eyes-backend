@@ -10,15 +10,16 @@ const computerVisionClient = require("../configs/computer-vision");
 const visualizeImageRouter = express.Router();
 
 visualizeImageRouter.post("/", getSingleImageInReq, (req, res) => {
-  getImageDescription(req.file.filename, computerVisionClient)
+  getImageDescription(req.file.filename, req.user.user_id, computerVisionClient)
     .then((descriptionObj) => {
       res.send(descriptionObj);
       fs.rm(
         path.join(
           path.dirname(require.main.filename),
-          "/uploads",
-          req.file.filename
+          "uploads",
+          req.user.user_id
         ),
+        { recursive: true },
         (err) => {
           if (err) {
             throw err;

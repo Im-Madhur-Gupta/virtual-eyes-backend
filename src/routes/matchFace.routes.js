@@ -1,26 +1,26 @@
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
 
 const addFaceController = require("../controllers/match-face/addFace.controllers");
+const findFacesController = require("../controllers/match-face/findFaces.controllers");
+const fetchPersonGroupID = require("../middlewares/fetchPersonGroupId");
 const getMultipleImageInReq = require("../middlewares/getMultipleImagesInReq");
-const User = require("../models/User");
+const getSingleImageInRequest = require("../middlewares/getSingleImageInReq");
 
 const matchFaceRouter = express.Router();
 
+// route to add a post to the person group corresponding to the user
 matchFaceRouter.post(
   "/add-face",
-  async (req, res, next) => {
-    // extracting the person_group_id from the queried user
-    const user_id = req.user.user_id;
-    const { person_group_id } = await User.findById(user_id);
-
-    // storing the person_group_id in the request object
-    req.user.person_group_id = person_group_id;
-    return next();
-  },
+  fetchPersonGroupID,
   getMultipleImageInReq,
   addFaceController
+);
+
+matchFaceRouter.post(
+  "/find-faces",
+  fetchPersonGroupID,
+  getSingleImageInRequest,
+  findFacesController
 );
 
 module.exports = matchFaceRouter;

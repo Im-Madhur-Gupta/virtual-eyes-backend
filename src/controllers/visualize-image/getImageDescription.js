@@ -2,12 +2,13 @@
 const path = require("path");
 const createReadStream = require("fs").createReadStream;
 
-const getImageDescription = async (filename, computerVisionClient) => {
+const getImageDescription = async (filename, userId, computerVisionClient) => {
   try {
     // local image path
     const describeImagePath = path.join(
       path.dirname(require.main.filename),
       "/uploads",
+      userId,
       filename
     );
 

@@ -8,7 +8,8 @@ const addFaceController = async (req, res) => {
   addFacesToPersonGroup(
     req.body.face_name,
     req.files.map((file) => file.filename),
-    req.user.person_group_id
+    req.user.person_group_id,
+    req.user.user_id
   );
   res.send({
     message:
