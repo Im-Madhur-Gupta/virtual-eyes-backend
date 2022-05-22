@@ -2,9 +2,7 @@
 const path = require("path");
 const createReadStream = require("fs").createReadStream;
 
-const computerVisionClient = require("../../utils/authenticateComputerVision");
-
-const getImageDescription = async (filename) => {
+const getImageDescription = async (filename, computerVisionClient) => {
   try {
     // local image path
     const describeImagePath = path.join(

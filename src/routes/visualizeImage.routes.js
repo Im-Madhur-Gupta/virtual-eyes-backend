@@ -3,12 +3,14 @@ const path = require("path");
 const express = require("express");
 
 const getImageDescription = require("../controllers/visualize-image/getImageDescription");
-const getVisualizeImage = require("../controllers/visualize-image/visualizeImage.controllers");
+const getSingleImageInReq = require("../middlewares/getSingleImageInReq");
+
+const computerVisionClient = require("../configs/computer-vision");
 
 const visualizeImageRouter = express.Router();
 
-visualizeImageRouter.post("/", getVisualizeImage, (req, res) => {
-  getImageDescription(req.file.filename)
+visualizeImageRouter.post("/", getSingleImageInReq, (req, res) => {
+  getImageDescription(req.file.filename, computerVisionClient)
     .then((descriptionObj) => {
       res.send(descriptionObj);
       fs.rm(
