@@ -1,4 +1,4 @@
-const { createReadStream } = require("fs");
+const { createReadStream, rm } = require("fs");
 const path = require("path");
 
 const faceServiceClient = require("../../configs/face-service");
@@ -79,6 +79,14 @@ async function addFacesToPersonGroup(faceName, faceImages, personGroupId) {
   await faceServiceClient.personGroup.train(personGroupId);
 
   await WaitForPersonGroupTraining(personGroupId);
+
+  // remove the directory which we created to store the images
+  const dirPath = path.join("./", "uploads", personGroupId);
+  rm(dirPath, { recursive: true }, (err) => {
+    if (err) {
+      throw err;
+    }
+  });
 }
 
 module.exports = addFacesToPersonGroup;
