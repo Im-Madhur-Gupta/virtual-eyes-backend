@@ -55,7 +55,7 @@ const registerController = async (req, res) => {
       { user_id: newUser._id, email },
       process.env.TOKEN_KEY,
       {
-        expiresIn: "2h",
+        expiresIn: "2 days",
       }
     );
 
