@@ -9,6 +9,8 @@ const verifyToken = require("./src/middlewares/auth");
 
 const matchFaceRouter = require("./src/routes/matchFace.routes");
 const visualizeImageRouter = require("./src/routes/visualizeImage.routes");
+const detectFacesController = require("./src/controllers/detect-faces/detectFaces.controllers");
+const getSingleImageInRequest = require("./src/middlewares/getSingleImageInReq");
 
 const port = process.env.PORT || 3000;
 
@@ -27,6 +29,13 @@ app.post("/login", loginController);
 app.use("/visualize-image", verifyToken, visualizeImageRouter);
 
 app.use("/match-face", verifyToken, matchFaceRouter);
+
+app.post(
+  "/detect-faces",
+  verifyToken,
+  getSingleImageInRequest,
+  detectFacesController
+);
 
 app.listen(port, () => {
   console.log("app has started on port - " + port);
