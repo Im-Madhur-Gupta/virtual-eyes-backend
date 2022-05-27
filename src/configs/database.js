@@ -6,7 +6,7 @@ exports.connect = () => {
   // Connecting to the DB
   mongoose
     .connect(
-      `mongodb+srv://admin:${MONGO_PASSWORD}@virtual-eyes-db.1ezvw.mongodb.net/?retryWrites=true&w=majority`,
+      `mongodb+srv://admin:${MONGO_PASSWORD}@virtual-eyes-db.1ezvw.mongodb.net/?retryWrites=true&w=majority/UsersDB`,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
