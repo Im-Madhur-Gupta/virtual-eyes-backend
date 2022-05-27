@@ -9,7 +9,7 @@ const User = require("../../models/User");
 const registerController = async (req, res) => {
   try {
     // pulling the user input from request body
-    const { email, password, first_name, last_name } = req.body;
+    const { email, password, name } = req.body;
 
     // checking if we have recieved email and password or not.
     if (!(email && password)) {
@@ -45,8 +45,7 @@ const registerController = async (req, res) => {
     const newUser = await User.create({
       email: email.toLowerCase(),
       password: encryptedPassword,
-      first_name,
-      last_name,
+      name,
       person_group_id,
     });
 

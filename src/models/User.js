@@ -10,8 +10,7 @@ const userSchema = new mongoose.Schema({
     validate: (email) => validator.isEmail(email),
   },
   password: { type: String, trim: true, required: true, minlength: 8 },
-  first_name: { type: String, default: null },
-  last_name: { type: String, default: null },
+  name: { type: String, default: null },
   person_group_id: { type: String, required: true },
   token: { type: String },
 });
