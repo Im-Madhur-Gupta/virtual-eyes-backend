@@ -22,51 +22,69 @@ async function DetectFaceRecognize(imgPath) {
   );
 }
 
-const findFacesController = async (req, res, next) => {
-  const personGroupId = req.user.person_group_id;
-  const userId = req.user.user_id;
-  const filename = req.file.filename;
+const findFacesController = async (req, res) => {
+  try {
+    const personGroupId = req.user.person_group_id;
+    const userId = req.user.user_id;
+    const filename = req.file.filename;
 
-  // Detect faces from source image url and only take those with sufficient quality for recognition.
-  const imgPath = path.join("./", "uploads", userId, filename);
-  let face_ids = (await DetectFaceRecognize(imgPath)).map(
-    (face) => face.faceId
-  );
+    // Detect faces from source image and only take those with sufficient quality for recognition.
+    const imgPath = path.join("./", "uploads", userId, filename);
+    let face_ids = (await DetectFaceRecognize(imgPath)).map(
+      (face) => face.faceId
+    );
 
-  // Identify the faces in a person group.
-  let results = await faceServiceClient.face.identify(face_ids, {
-    personGroupId,
-  });
-
-  detectedPersons = [];
-
-  await Promise.all(
-    results.map(async (result) => {
-      if (result.candidates && result.candidates.length > 0) {
-        let person = await faceServiceClient.personGroupPerson.get(
-          personGroupId,
-          result.candidates[0].personId
-        );
-        const detectedPerson = {
-          name: person.name,
-          id: result.faceId,
-          confidence: result.candidates[0].confidence,
-        };
-        detectedPersons.push(detectedPerson);
-      }
-    })
-  );
-
-  console.log(detectedPersons);
-  res.send(detectedPersons);
-
-  // remove the directory which we created to store the images
-  const dirPath = path.join("./", "uploads", userId);
-  rm(dirPath, { recursive: true }, (err) => {
-    if (err) {
-      throw err;
+    // No faces where found in the photo
+    if (face_ids.length === 0) {
+      return res.send({ message: "No faces where found in the image." });
     }
-  });
+
+    // Identify the faces in a person group.
+    let results = await faceServiceClient.face.identify(face_ids, {
+      personGroupId,
+    });
+
+    console.log("findFacesController - results - ", results);
+
+    // No matching faces where found in the user's person group
+    if (results && results[0].candidates.length === 0) {
+      return res.send({
+        message: "No matching faces where found in the user's person group.",
+      });
+    }
+
+    detectedPersons = [];
+
+    await Promise.all(
+      results.map(async (result) => {
+        if (result.candidates && result.candidates.length > 0) {
+          let person = await faceServiceClient.personGroupPerson.get(
+            personGroupId,
+            result.candidates[0].personId
+          );
+          const detectedPerson = {
+            name: person.name,
+            id: result.faceId,
+            confidence: result.candidates[0].confidence,
+          };
+          detectedPersons.push(detectedPerson);
+        }
+      })
+    );
+
+    console.log("findFacesController - detectedPersons - ", detectedPersons);
+    res.send(detectedPersons);
+
+    // remove the directory which we created to store the images
+    const dirPath = path.join("./", "uploads", userId);
+    rm(dirPath, { recursive: true }, (err) => {
+      if (err) {
+        throw err;
+      }
+    });
+  } catch (err) {
+    throw err;
+  }
 };
 
 module.exports = findFacesController;
