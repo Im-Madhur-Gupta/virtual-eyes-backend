@@ -36,7 +36,7 @@ const findFacesController = async (req, res) => {
 
     // No faces where found in the photo
     if (face_ids.length === 0) {
-      return res.send({ message: "No faces where found." });
+      return res.send({ detectedPerson: [], message: "No faces where found." });
     }
 
     // Identify the faces in a person group.
@@ -49,6 +49,7 @@ const findFacesController = async (req, res) => {
     // No matching faces where found in the user's person group
     if (results && results[0].candidates.length === 0) {
       return res.send({
+        detectedPerson: [],
         message: "No matching faces where found.",
       });
     }
@@ -73,7 +74,7 @@ const findFacesController = async (req, res) => {
     );
 
     console.log("findFacesController - detectedPersons - ", detectedPersons);
-    res.send(detectedPersons);
+    res.send({ detectedPersons, message: "Matching faces where found." });
 
     // remove the directory which we created to store the images
     const dirPath = path.join("./", "uploads", userId);
