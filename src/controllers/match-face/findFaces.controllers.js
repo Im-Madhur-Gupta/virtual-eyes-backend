@@ -36,7 +36,10 @@ const findFacesController = async (req, res) => {
 
     // No faces where found in the photo
     if (face_ids.length === 0) {
-      return res.send({ detectedPerson: [], message: "No faces where found." });
+      return res.send({
+        detectedPersons: [],
+        message: "No faces where found.",
+      });
     }
 
     // Identify the faces in a person group.
@@ -49,7 +52,7 @@ const findFacesController = async (req, res) => {
     // No matching faces where found in the user's person group
     if (results && results[0].candidates.length === 0) {
       return res.send({
-        detectedPerson: [],
+        detectedPersons: [],
         message: "No matching faces where found.",
       });
     }
